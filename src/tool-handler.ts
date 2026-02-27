@@ -8,6 +8,7 @@ import {
   getProjectTool,
   getProjectTaskCountsTool,
   getProjectSectionsTool,
+  updateSectionTool,
   createProjectTool
 } from './tools/project-tools.js';
 import {
@@ -65,6 +66,7 @@ const all_tools: Tool[] = [
   getProjectTool,
   getProjectTaskCountsTool,
   getProjectSectionsTool,
+  updateSectionTool,
   createProjectTool,
   createTaskStoryTool,
   updateTaskStoryTool,
@@ -328,6 +330,14 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
         case "asana_get_project_sections": {
           const { project_id, ...opts } = args;
           const response = await asanaClient.getProjectSections(project_id, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_update_section": {
+          const { section_id, opt_fields, ...data } = args;
+          const response = await asanaClient.updateSection(section_id, data, { opt_fields });
           return {
             content: [{ type: "text", text: JSON.stringify(response) }],
           };

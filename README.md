@@ -138,7 +138,15 @@ Another example:
     * Optional input:
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: List of project sections
-11. `asana_create_task_story`
+11. `asana_update_section`
+    * Update an existing section (e.g. rename it)
+    * Required input:
+        * section_id (string): The section GID to update
+        * name (string): The new name for the section
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Updated section information
+12. `asana_create_task_story`
     * Create a comment or story on a task
     * Required input:
         * task_id (string): The task ID to add the story to
