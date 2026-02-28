@@ -258,7 +258,7 @@ export class AsanaClientWrapper {
     const options = opts.opt_fields ? opts : {};
     const body = { data };
     const sections = new Asana.SectionsApi();
-    const response = await sections.updateSection(body, sectionId, options);
+    const response = await sections.updateSection(sectionId, { body, ...options });
     return response.data;
   }
 

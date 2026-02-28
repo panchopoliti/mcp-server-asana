@@ -154,7 +154,7 @@ Another example:
     * Optional input:
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Created story information
-12. `asana_update_task_story`
+13. `asana_update_task_story`
     * Update a comment or story on a task. Only comment stories can have their text updated, and only comment stories and attachment stories can be pinned.
     * Required input:
         * story_id (string): The story/comment ID to update
@@ -164,19 +164,19 @@ Another example:
         * is_pinned (boolean): Whether the story should be pinned on the resource
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Updated story information
-13. `asana_add_task_dependencies`
+14. `asana_add_task_dependencies`
     * Set dependencies for a task
     * Required input:
         * task_id (string): The task ID to add dependencies to
         * dependencies (array of strings): Array of task IDs that this task depends on
     * Returns: Updated task dependencies
-14. `asana_add_task_dependents`
+15. `asana_add_task_dependents`
     * Set dependents for a task (tasks that depend on this task)
     * Required input:
         * task_id (string): The task ID to add dependents to
         * dependents (array of strings): Array of task IDs that depend on this task
     * Returns: Updated task dependents
-15. `asana_create_subtask`
+16. `asana_create_subtask`
     * Create a new subtask for an existing task
     * Required input:
         * parent_task_id (string): The parent task ID to create the subtask under
@@ -187,21 +187,21 @@ Another example:
         * assignee (string): Assignee (can be 'me' or a user ID)
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Created subtask information
-16. `asana_get_multiple_tasks_by_gid`
+17. `asana_get_multiple_tasks_by_gid`
     * Get detailed information about multiple tasks by their GIDs (maximum 25 tasks)
     * Required input:
         * task_ids (array of strings or comma-separated string): Task GIDs to retrieve (max 25)
     * Optional input:
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: List of detailed task information
-17. `asana_get_project_status`
+18. `asana_get_project_status`
     * Get a project status update
     * Required input:
         * project_status_gid (string): The project status GID to retrieve
     * Optional input:
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Project status information
-18. `asana_get_project_statuses`
+19. `asana_get_project_statuses`
     * Get all status updates for a project
     * Required input:
         * project_gid (string): The project GID to get statuses for
@@ -210,7 +210,7 @@ Another example:
         * offset (string): Pagination offset token
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: List of project status updates
-19. `asana_create_project_status`
+20. `asana_create_project_status`
     * Create a new status update for a project
     * Required input:
         * project_gid (string): The project GID to create the status for
@@ -221,12 +221,12 @@ Another example:
         * html_text (string): HTML formatted text for the status update
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Created project status information
-20. `asana_delete_project_status`
+21. `asana_delete_project_status`
     * Delete a project status update
     * Required input:
         * project_status_gid (string): The project status GID to delete
     * Returns: Deletion confirmation
-21. `asana_set_parent_for_task`
+22. `asana_set_parent_for_task`
     * Set the parent of a task and position the subtask within the other subtasks of that parent
     * Required input:
         * task_id (string): The task ID to operate on
@@ -237,14 +237,14 @@ Another example:
         * insert_before (string): A subtask of the parent to insert the task before, or null to insert at the end of the list
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Updated task information
-22. `asana_get_tag`
+23. `asana_get_tag`
     * Get detailed information about a specific tag
     * Required input:
         * tag_gid (string): Globally unique identifier for the tag
     * Optional input:
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Detailed tag information
-23. `asana_get_tags_for_task`
+24. `asana_get_tags_for_task`
     * Get a task's tags
     * Required input:
         * task_gid (string): The task to operate on
@@ -253,7 +253,7 @@ Another example:
         * offset (string): Offset token. An offset to the next page returned by the API.
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: List of tags associated with the task
-24. `asana_get_tasks_for_tag`
+25. `asana_get_tasks_for_tag`
     * Get tasks for a specific tag
     * Required input:
         * tag_gid (string): The tag GID to retrieve tasks for
@@ -263,7 +263,7 @@ Another example:
         * limit (integer): The number of objects to return per page. The value must be between 1 and 100.
         * offset (string): An offset to the next page returned by the API.
     * Returns: List of tasks for the specified tag
-25. `asana_get_tags_for_workspace`
+26. `asana_get_tags_for_workspace`
     * Get tags in a workspace
     * Required input:
         * workspace_gid (string): Globally unique identifier for the workspace or organization
@@ -272,7 +272,7 @@ Another example:
         * offset (string): Offset token. An offset to the next page returned by the API.
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: List of tags in the workspace
-26. `asana_update_tag`
+27. `asana_update_tag`
     * Update an existing tag
     * Required input:
         * tag_gid (string): Globally unique identifier for the tag
@@ -282,12 +282,12 @@ Another example:
         * notes (string): Notes about the tag
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Updated tag information
-27. `asana_delete_tag`
+28. `asana_delete_tag`
     * Delete a tag
     * Required input:
         * tag_gid (string): Globally unique identifier for the tag
     * Returns: Deletion confirmation
-28. `asana_create_tag_for_workspace`
+29. `asana_create_tag_for_workspace`
     * Create a new tag in a workspace
     * Required input:
         * workspace_gid (string): Globally unique identifier for the workspace or organization
@@ -297,19 +297,19 @@ Another example:
         * notes (string): Notes about the tag
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: Created tag information
-29. `asana_add_tag_to_task`
+30. `asana_add_tag_to_task`
     * Add a tag to a task
     * Required input:
         * task_gid (string): The task GID to add the tag to
         * tag_gid (string): The tag GID to add to the task
     * Returns: Success response
-30. `asana_remove_tag_from_task`
+31. `asana_remove_tag_from_task`
     * Remove a tag from a task
     * Required input:
         * task_gid (string): The task GID to remove the tag from
         * tag_gid (string): The tag GID to remove from the task
     * Returns: Success response
-31. `asana_add_project_to_task`
+32. `asana_add_project_to_task`
     * Add an existing task to a project
     * Required input:
         * task_id (string): The task ID to add to the project
@@ -320,20 +320,20 @@ Another example:
         * insert_before (string): A task ID to insert this task before. At most one of insert_before, insert_after, or section should be specified.
     * Returns: Success message confirming the task was added to the project
     * Notes: If no positioning arguments are given, the task will be added to the end of the project
-32. `asana_remove_project_from_task`
+33. `asana_remove_project_from_task`
     * Remove a task from a project
     * Required input:
         * task_id (string): The task ID to remove from the project
         * project_id (string): The project ID to remove the task from
     * Returns: Success message confirming the task was removed from the project
     * Notes: The task will still exist in the system, but it will not be in the project anymore
-33. `asana_delete_task`
+34. `asana_delete_task`
     * Delete a task permanently
     * Required input:
         * task_id (string): The task ID to delete
     * Returns: Success message confirming the task was deleted
     * Notes: This action cannot be undone. The task will be permanently removed.
-34. `asana_create_project`
+35. `asana_create_project`
     * Create a new project in a workspace or team
     * Required input:
         * workspace (string): The workspace GID to create the project in
@@ -346,7 +346,7 @@ Another example:
         * default_view (string): Default view (list, board, calendar, timeline)
         * opt_fields (string): Comma-separated list of optional fields to include
     * Returns: The created project object
-35. `asana_rollback`
+36. `asana_rollback`
     * Rollback one or more previous write operations performed through this MCP server. Operations are rolled back in reverse chronological order. Irreversible operations (deletes, comments) are skipped.
     * Optional input:
         * transaction_id (string): UUID of a specific transaction to roll back
@@ -354,7 +354,7 @@ Another example:
         * last_n (number): Roll back the last N reversible operations from the current session
         * dry_run (boolean): If true, return what would be rolled back without executing (default: false)
     * Returns: Summary of rolled back, skipped, and errored transactions
-36. `asana_get_transaction_log`
+37. `asana_get_transaction_log`
     * View the transaction log of write operations performed through this MCP server. Returns log entries with operation details, reversibility status, and rollback state.
     * Optional input:
         * session_id (string): Filter to a specific session. Defaults to the current session.
