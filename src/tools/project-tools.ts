@@ -85,6 +85,29 @@ export const getProjectSectionsTool: Tool = {
   }
 };
 
+export const updateSectionTool: Tool = {
+  name: "asana_update_section",
+  description: "Update an existing section (e.g. rename it)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      section_id: {
+        type: "string",
+        description: "The section GID to update"
+      },
+      name: {
+        type: "string",
+        description: "The new name for the section"
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields to include"
+      }
+    },
+    required: ["section_id", "name"]
+  }
+};
+
 export const createProjectTool: Tool = {
   name: "asana_create_project",
   description: "Create a new project in a workspace or team",
