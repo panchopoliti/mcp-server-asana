@@ -254,6 +254,14 @@ export class AsanaClientWrapper {
     return response.data;
   }
 
+  async createSectionForProject(projectId: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const body = { data };
+    const sections = new Asana.SectionsApi();
+    const response = await sections.createSectionForProject(projectId, { body, ...options });
+    return response.data;
+  }
+
   async updateSection(sectionId: string, data: any, opts: any = {}) {
     const options = opts.opt_fields ? opts : {};
     const body = { data };
