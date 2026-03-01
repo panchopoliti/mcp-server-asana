@@ -108,6 +108,37 @@ export const updateSectionTool: Tool = {
   }
 };
 
+export const createSectionForProjectTool: Tool = {
+  name: "asana_create_section_for_project",
+  description: "Create a new section in a project",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_id: {
+        type: "string",
+        description: "The project GID to create the section in"
+      },
+      name: {
+        type: "string",
+        description: "The name of the new section"
+      },
+      insert_before: {
+        type: "string",
+        description: "An existing section GID within this project before which the new section should be inserted. Cannot be provided together with insert_after."
+      },
+      insert_after: {
+        type: "string",
+        description: "An existing section GID within this project after which the new section should be inserted. Cannot be provided together with insert_before."
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields to include"
+      }
+    },
+    required: ["project_id", "name"]
+  }
+};
+
 export const createProjectTool: Tool = {
   name: "asana_create_project",
   description: "Create a new project in a workspace or team",
