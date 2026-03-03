@@ -4,14 +4,14 @@ import { validateAsanaXml } from './asana-validate-xml.js';
 
 /**
  * Convert plain text to Asana-compatible html_text, preserving line breaks.
- * Escapes HTML entities and converts \n to <br />.
+ * Escapes HTML entities and wraps in <body> tags. Asana renders \n as line breaks in html_text.
  */
 function plainTextToHtml(text: string): string {
   const escaped = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  return `<body>${escaped.replace(/\n/g, '<br />')}</body>`;
+  return `<body>${escaped}</body>`;
 }
 
 import { listWorkspacesTool } from './tools/workspace-tools.js';
