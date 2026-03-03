@@ -26,7 +26,9 @@
     "dev": "NODE_ENV=development NODE_OPTIONS='--loader ts-node/esm' node --experimental-specifier-resolution=node src/index.ts",
     "watch": "tsc -w",
     "prepublishOnly": "npm run build",
-    "inspector": "npx @modelcontextprotocol/inspector dist/index.js"
+    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
+    "release:prepare": "git pull && npm version patch && npm run build && git push && git push --tags",
+    "release:publish": "npm publish"
   },
   "keywords": [
     "asana",
