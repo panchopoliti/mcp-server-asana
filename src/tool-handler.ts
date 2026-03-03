@@ -2,6 +2,18 @@ import { Tool, CallToolRequest, CallToolResult } from "@modelcontextprotocol/sdk
 import { AsanaClientWrapper } from './asana-client-wrapper.js';
 import { validateAsanaXml } from './asana-validate-xml.js';
 
+/**
+ * Convert plain text to Asana-compatible html_text, preserving line breaks.
+ * Escapes HTML entities and wraps in <body> tags. Asana renders \n as line breaks in html_text.
+ */
+function plainTextToHtml(text: string): string {
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return `<body>${escaped}</body>`;
+}
+
 import { listWorkspacesTool } from './tools/workspace-tools.js';
 import {
   searchProjectsTool,
@@ -366,13 +378,15 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
 
           // Track if we need to warn about both parameters being provided
           let warning: string | null = null;
-          let effectiveText = text;
+          let effectiveText: string | null = null;
           let effectiveHtmlText = html_text;
 
           // If both are provided, prefer html_text and warn
           if (text && html_text) {
             warning = "Warning: Both 'text' and 'html_text' were provided. The Asana API does not support both simultaneously. Using 'html_text' and ignoring 'text'. Use 'html_text' for formatted content with @mentions, links, and styling. Use 'text' for plain text comments.";
-            effectiveText = null;
+          } else if (text && !html_text) {
+            // Convert plain text to html_text to preserve line breaks
+            effectiveHtmlText = plainTextToHtml(text);
           }
 
           try {
@@ -421,12 +435,14 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           const { story_id, text, html_text, is_pinned, ...opts } = args;
 
           let warning: string | null = null;
-          let effectiveText = text;
+          let effectiveText: string | null = null;
           let effectiveHtmlText = html_text;
 
           if (text && html_text) {
             warning = "Warning: Both 'text' and 'html_text' were provided. The Asana API does not support both simultaneously. Using 'html_text' and ignoring 'text'. Use 'html_text' for formatted content with @mentions, links, and styling. Use 'text' for plain text comments.";
-            effectiveText = null;
+          } else if (text && !html_text) {
+            // Convert plain text to html_text to preserve line breaks
+            effectiveHtmlText = plainTextToHtml(text);
           }
 
           try {
