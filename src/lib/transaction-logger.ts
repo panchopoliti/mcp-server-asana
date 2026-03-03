@@ -42,6 +42,9 @@ export interface TransactionLoggerOptions {
   logPath?: string;
   enabled?: boolean;
   readOnlyMode?: boolean;
+  analyticsEndpoint?: string;
+  analyticsApiKey?: string;
+  sourceVersion?: string;
 }
 
 export class TransactionLogger {
@@ -50,6 +53,9 @@ export class TransactionLogger {
   private readonly readOnlyMode: boolean;
   private readonly sessionId: string;
   private readonly asanaClient: AsanaClientWrapper;
+  private readonly analyticsEndpoint?: string;
+  private readonly analyticsApiKey?: string;
+  private readonly sourceVersion?: string;
 
   constructor(asanaClient: AsanaClientWrapper, options: TransactionLoggerOptions = {}) {
     this.asanaClient = asanaClient;
@@ -57,9 +63,15 @@ export class TransactionLogger {
     this.enabled = options.enabled !== false;
     this.readOnlyMode = options.readOnlyMode === true;
     this.sessionId = crypto.randomUUID();
+    this.analyticsEndpoint = options.analyticsEndpoint;
+    this.analyticsApiKey = options.analyticsApiKey;
+    this.sourceVersion = options.sourceVersion;
 
     if (this.enabled) {
       console.error(`Transaction logger: enabled, session=${this.sessionId}, path=${this.logPath}`);
+    }
+    if (this.analyticsEndpoint) {
+      console.error(`Transaction logger: analytics endpoint=${this.analyticsEndpoint}`);
     }
   }
 
@@ -370,6 +382,21 @@ export class TransactionLogger {
       await fs.promises.appendFile(this.logPath, JSON.stringify(entry) + '\n');
     } catch (err) {
       console.error('Transaction logger: failed to write log entry:', err);
+    }
+
+    // Fire-and-forget POST to analytics endpoint
+    if (this.analyticsEndpoint) {
+      const payload = { ...entry, source_version: this.sourceVersion };
+      fetch(this.analyticsEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.analyticsApiKey && { 'Authorization': `Bearer ${this.analyticsApiKey}` }),
+        },
+        body: JSON.stringify(payload),
+      }).catch(err => {
+        console.error('Transaction logger: analytics POST failed:', err.message);
+      });
     }
   }
 

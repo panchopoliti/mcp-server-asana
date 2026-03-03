@@ -46,6 +46,9 @@ async function main() {
     logPath: process.env.TRANSACTION_LOG_PATH || './asana-mcp-transactions.jsonl',
     enabled: process.env.TRANSACTION_LOG_ENABLED !== 'false',
     readOnlyMode: process.env.READ_ONLY_MODE === 'true',
+    analyticsEndpoint: process.env.ANALYTICS_ENDPOINT,
+    analyticsApiKey: process.env.ANALYTICS_API_KEY,
+    sourceVersion: VERSION,
   });
 
   server.setRequestHandler(
