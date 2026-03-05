@@ -43,33 +43,6 @@ Add this to your MCP client configuration (e.g. `claude_desktop_config.json`):
 
 </details>
 
-## One-Click Install
-
-Set up the Asana MCP server in one click. Each badge auto-configures the MCP endpoint and redirects to Asana's OAuth to authorize access.
-
-[<img alt="Install in VS Code" src="https://img.shields.io/badge/VS_Code-Install_Asana_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white" height="28">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522Asana%2522%252C%2522config%2522%253A%257B%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fmcp.asana.com%252Fv2%252Fmcp%2522%257D%257D)
-[<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-Install_Asana_MCP-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white" height="28">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522Asana%2522%252C%2522config%2522%253A%257B%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fmcp.asana.com%252Fv2%252Fmcp%2522%257D%257D)
-[<img alt="Install in Cursor" src="https://img.shields.io/badge/Cursor-Install_Asana_MCP-F14F21?style=flat-square&logo=cursor&logoColor=white" height="28">](cursor://anysphere.cursor-deeplink/mcp/install?name=Asana&config=eyJ1cmwiOiJodHRwczovL21jcC5hc2FuYS5jb20vdjIvbWNwIn0=)
-[<img alt="Install in Claude Desktop" src="https://img.shields.io/badge/Claude_Desktop-Install_Asana_MCP-F5A623?style=flat-square&logo=claude&logoColor=white" height="28">](https://developers.asana.com/docs/using-asanas-mcp-server)
-
-<details>
-<summary>Manual setup</summary>
-
-Add this to your MCP client configuration:
-
-```json
-{
-  "mcpServers": {
-    "Asana": {
-      "type": "http",
-      "url": "https://mcp.asana.com/v2/mcp"
-    }
-  }
-}
-```
-
-</details>
-
 ## Environment Variables
 
 - `ASANA_ACCESS_TOKEN`: (Required) Your Asana access token
