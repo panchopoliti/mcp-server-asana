@@ -12,6 +12,8 @@ export class AsanaClientWrapper {
   private projectStatuses: any;
   private tags: any;
   private customFieldSettings: any;
+  private sections: any;
+  private userTaskLists: any;
 
   constructor(token: string) {
     const client = Asana.ApiClient.instance;
@@ -25,10 +27,24 @@ export class AsanaClientWrapper {
     this.projectStatuses = new Asana.ProjectStatusesApi();
     this.tags = new Asana.TagsApi();
     this.customFieldSettings = new Asana.CustomFieldSettingsApi();
+    this.sections = new Asana.SectionsApi();
+    this.userTaskLists = new Asana.UserTaskListsApi();
   }
 
   async listWorkspaces(opts: any = {}) {
     const response = await this.workspaces.getWorkspaces(opts);
+    return response.data;
+  }
+
+  async getMyTasks(workspace: string, opts: any = {}) {
+    const userTaskListResponse = await this.userTaskLists.getUserTaskListForUser('me', workspace);
+    const userTaskListGid = userTaskListResponse.data.gid;
+
+    const taskOpts: any = {};
+    if (opts.completed_since) taskOpts.completed_since = opts.completed_since;
+    if (opts.opt_fields) taskOpts.opt_fields = opts.opt_fields;
+
+    const response = await this.tasks.getTasksForUserTaskList(userTaskListGid, taskOpts);
     return response.data;
   }
 
@@ -249,24 +265,21 @@ export class AsanaClientWrapper {
   async getProjectSections(projectId: string, opts: any = {}) {
     // Only include opts if opt_fields was actually provided
     const options = opts.opt_fields ? opts : {};
-    const sections = new Asana.SectionsApi();
-    const response = await sections.getSectionsForProject(projectId, options);
+    const response = await this.sections.getSectionsForProject(projectId, options);
     return response.data;
   }
 
   async createSectionForProject(projectId: string, data: any, opts: any = {}) {
     const options = opts.opt_fields ? opts : {};
     const body = { data };
-    const sections = new Asana.SectionsApi();
-    const response = await sections.createSectionForProject(projectId, { body, ...options });
+    const response = await this.sections.createSectionForProject(projectId, { body, ...options });
     return response.data;
   }
 
   async updateSection(sectionId: string, data: any, opts: any = {}) {
     const options = opts.opt_fields ? opts : {};
     const body = { data };
-    const sections = new Asana.SectionsApi();
-    const response = await sections.updateSection(sectionId, { body, ...options });
+    const response = await this.sections.updateSection(sectionId, { body, ...options });
     return response.data;
   }
 
@@ -477,6 +490,36 @@ export class AsanaClientWrapper {
 
   async deleteTask(taskId: string) {
     const response = await this.tasks.deleteTask(taskId);
+    return response.data;
+  }
+
+  async getSubtasksForTask(taskId: string, opts: any = {}) {
+    const response = await this.tasks.getSubtasksForTask(taskId, opts);
+    return response.data;
+  }
+
+  async getTasksForProject(projectId: string, opts: any = {}) {
+    const response = await this.tasks.getTasksForProject(projectId, opts);
+    return response.data;
+  }
+
+  async deleteSection(sectionId: string) {
+    const response = await this.sections.deleteSection(sectionId);
+    return response.data;
+  }
+
+  async addTaskToSection(sectionId: string, taskId: string, insertBefore?: string, insertAfter?: string) {
+    const data: any = { task: taskId };
+    if (insertBefore) data.insert_before = insertBefore;
+    if (insertAfter) data.insert_after = insertAfter;
+    const response = await this.sections.addTaskForSection(sectionId, { body: { data } });
+    return response.data;
+  }
+
+  async updateProject(projectId: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const body = { data };
+    const response = await this.projects.updateProject(body, projectId, options);
     return response.data;
   }
 }
