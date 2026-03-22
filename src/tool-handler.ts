@@ -14,6 +14,27 @@ function plainTextToHtml(text: string): string {
   return `<body>${escaped}</body>`;
 }
 
+/**
+ * Fields that contain user-authored text content and may have literal \n
+ * escape sequences from LLM tool calls that should be real newlines.
+ */
+const TEXT_CONTENT_FIELDS = ['text', 'html_text', 'notes', 'html_notes'];
+
+/**
+ * Sanitize text content fields in tool arguments.
+ * LLMs often serialize newlines as literal \n escape sequences in JSON string
+ * parameters. This replaces those literal sequences with actual newline characters.
+ */
+function sanitizeTextFields(args: Record<string, any>): Record<string, any> {
+  const sanitized = { ...args };
+  for (const field of TEXT_CONTENT_FIELDS) {
+    if (typeof sanitized[field] === 'string') {
+      sanitized[field] = sanitized[field].replace(/\\n/g, '\n');
+    }
+  }
+  return sanitized;
+}
+
 import { listWorkspacesTool } from './tools/workspace-tools.js';
 import {
   searchProjectsTool,
@@ -166,7 +187,7 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
         );
       }
 
-      const args = request.params.arguments as any;
+      const args = sanitizeTextFields(request.params.arguments as Record<string, any>);
 
       switch (request.params.name) {
         case "asana_list_workspaces": {
