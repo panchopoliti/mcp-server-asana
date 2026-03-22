@@ -139,6 +139,33 @@ export const createSectionForProjectTool: Tool = {
   }
 };
 
+export const getTasksForProjectTool: Tool = {
+  name: "asana_get_tasks_for_project",
+  description: "Get all tasks in a project. Use this instead of search_tasks when you need to list tasks in a specific project. Supports pagination and optional field selection.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_id: {
+        type: "string",
+        description: "The project GID to get tasks for"
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields to include (e.g. 'name,completed,assignee,due_on,memberships.section.name')"
+      },
+      limit: {
+        type: "integer",
+        description: "The number of objects to return per page. The value must be between 1 and 100."
+      },
+      offset: {
+        type: "string",
+        description: "An offset token from a previous response for pagination"
+      }
+    },
+    required: ["project_id"]
+  }
+};
+
 export const createProjectTool: Tool = {
   name: "asana_create_project",
   description: "Create a new project in a workspace or team",
@@ -179,5 +206,44 @@ export const createProjectTool: Tool = {
       }
     },
     required: ["workspace", "name"]
+  }
+};
+
+export const updateProjectTool: Tool = {
+  name: "asana_update_project",
+  description: "Update a project's details (name, description, etc.)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_id: {
+        type: "string",
+        description: "The project GID to update"
+      },
+      name: {
+        type: "string",
+        description: "New name for the project"
+      },
+      notes: {
+        type: "string",
+        description: "New plain text description for the project"
+      },
+      html_notes: {
+        type: "string",
+        description: "New HTML formatted description (must be valid Asana XML)"
+      },
+      color: {
+        type: "string",
+        description: "Color of the project. Can be one of: dark-pink, dark-green, dark-blue, dark-red, dark-teal, dark-brown, dark-orange, dark-purple, dark-warm-gray, light-pink, light-green, light-blue, light-red, light-teal, light-brown, light-orange, light-purple, light-warm-gray"
+      },
+      privacy_setting: {
+        type: "string",
+        description: "Privacy setting: public_to_workspace, private_to_team, private"
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields to include"
+      }
+    },
+    required: ["project_id"]
   }
 };

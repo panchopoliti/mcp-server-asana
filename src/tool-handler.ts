@@ -20,10 +20,16 @@ import {
   getProjectTool,
   getProjectTaskCountsTool,
   getProjectSectionsTool,
+  getTasksForProjectTool,
   updateSectionTool,
   createSectionForProjectTool,
-  createProjectTool
+  createProjectTool,
+  updateProjectTool
 } from './tools/project-tools.js';
+import {
+  deleteSectionTool,
+  addTaskToSectionTool
+} from './tools/section-tools.js';
 import {
   getProjectStatusTool,
   getProjectStatusesForProjectTool,
@@ -31,11 +37,13 @@ import {
   deleteProjectStatusTool
 } from './tools/project-status-tools.js';
 import {
+  getMyTasksTool,
   searchTasksTool,
   getTaskTool,
   createTaskTool,
   updateTaskTool,
   createSubtaskTool,
+  getSubtasksForTaskTool,
   getMultipleTasksByGidTool,
   addProjectToTaskTool,
   removeProjectFromTaskTool,
@@ -71,6 +79,7 @@ import {
 const all_tools: Tool[] = [
   listWorkspacesTool,
   searchProjectsTool,
+  getMyTasksTool,
   searchTasksTool,
   getTaskTool,
   createTaskTool,
@@ -79,14 +88,17 @@ const all_tools: Tool[] = [
   getProjectTool,
   getProjectTaskCountsTool,
   getProjectSectionsTool,
+  getTasksForProjectTool,
   updateSectionTool,
   createSectionForProjectTool,
   createProjectTool,
+  updateProjectTool,
   createTaskStoryTool,
   updateTaskStoryTool,
   addTaskDependenciesTool,
   addTaskDependentsTool,
   createSubtaskTool,
+  getSubtasksForTaskTool,
   getMultipleTasksByGidTool,
   getProjectStatusTool,
   getProjectStatusesForProjectTool,
@@ -105,6 +117,8 @@ const all_tools: Tool[] = [
   addProjectToTaskTool,
   removeProjectFromTaskTool,
   deleteTaskTool,
+  deleteSectionTool,
+  addTaskToSectionTool,
   rollbackTool,
   getTransactionLogTool,
 ];
@@ -113,6 +127,7 @@ const all_tools: Tool[] = [
 export const READ_ONLY_TOOLS = [
   'asana_list_workspaces',
   'asana_search_projects',
+  'asana_get_my_tasks',
   'asana_search_tasks',
   'asana_get_task',
   'asana_get_task_stories',
@@ -121,7 +136,9 @@ export const READ_ONLY_TOOLS = [
   'asana_get_project_status',
   'asana_get_project_statuses',
   'asana_get_project_sections',
+  'asana_get_tasks_for_project',
   'asana_get_multiple_tasks_by_gid',
+  'asana_get_subtasks',
   'asana_get_tag',
   'asana_get_tags_for_task',
   'asana_get_tasks_for_tag',
@@ -134,6 +151,7 @@ const DESTRUCTIVE_TOOLS = [
   'asana_delete_task',
   'asana_delete_tag',
   'asana_delete_project_status',
+  'asana_delete_section',
 ];
 
 // Filter tools based on READ_ONLY_MODE and ALLOW_DESTRUCTIVE_OPERATIONS
@@ -184,6 +202,14 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
             archived,
             opts
           );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_get_my_tasks": {
+          const { workspace, ...opts } = args;
+          const response = await asanaClient.getMyTasks(workspace, opts);
           return {
             content: [{ type: "text", text: JSON.stringify(response) }],
           };
@@ -344,6 +370,14 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
         case "asana_get_project_sections": {
           const { project_id, ...opts } = args;
           const response = await asanaClient.getProjectSections(project_id, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_get_tasks_for_project": {
+          const { project_id, ...opts } = args;
+          const response = await asanaClient.getTasksForProject(project_id, opts);
           return {
             content: [{ type: "text", text: JSON.stringify(response) }],
           };
@@ -543,6 +577,14 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           }
         }
 
+        case "asana_get_subtasks": {
+          const { task_gid, ...opts } = args;
+          const response = await asanaClient.getSubtasksForTask(task_gid, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
         case "asana_get_multiple_tasks_by_gid": {
           const { task_ids, ...opts } = args;
           // Handle both array and string input
@@ -673,6 +715,72 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           return {
             content: [{ type: "text", text: message }],
           };
+        }
+
+        case "asana_delete_section": {
+          const { section_id } = args;
+          try {
+            await asanaClient.deleteSection(section_id);
+            return {
+              content: [{ type: "text", text: `Successfully deleted section ${section_id}` }],
+            };
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  error: errorMessage,
+                  note: "A Bad Request error when deleting a section can occur if the section still contains tasks. Move or remove all tasks from the section before deleting it."
+                })
+              }],
+            };
+          }
+        }
+
+        case "asana_add_task_to_section": {
+          const { section_id, task_id, insert_before, insert_after } = args;
+          await asanaClient.addTaskToSection(section_id, task_id, insert_before, insert_after);
+          return {
+            content: [{ type: "text", text: `Successfully moved task ${task_id} to section ${section_id}` }],
+          };
+        }
+
+        case "asana_update_project": {
+          const { project_id, opt_fields, ...projectData } = args;
+          try {
+            const response = await asanaClient.updateProject(project_id, projectData, { opt_fields });
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          } catch (error) {
+            if (projectData.html_notes && error instanceof Error && error.message.includes('400')) {
+              const xmlValidationErrors = validateAsanaXml(projectData.html_notes);
+              if (xmlValidationErrors.length > 0) {
+                return {
+                  content: [{
+                    type: "text",
+                    text: JSON.stringify({
+                      error: error instanceof Error ? error.message : String(error),
+                      validation_errors: xmlValidationErrors,
+                      message: "The HTML notes contain invalid XML formatting. Please check the validation errors above."
+                    })
+                  }],
+                };
+              } else {
+                return {
+                  content: [{
+                    type: "text",
+                    text: JSON.stringify({
+                      error: error instanceof Error ? error.message : String(error),
+                      html_notes_validation: "The HTML notes format is valid. The error must be related to something else."
+                    })
+                  }],
+                };
+              }
+            }
+            throw error;
+          }
         }
 
         default:
